@@ -422,27 +422,45 @@ export function createApp() {
       return c.json({ success: true, data: { message: 'Submission received for review.' } });
     }
 
-    const createdEvent = {
+    const createdEvent: Event = {
       id: crypto.randomUUID(),
+      cityId: 'a1b2c3d4-0000-0000-0000-000000000001',
+      venueId: crypto.randomUUID(),
+      categoryId: parsed.data.categoryId,
       title: parsed.data.title,
       slug: slugify(parsed.data.title),
       description: parsed.data.description,
       startTime: parsed.data.startTime,
       endTime: parsed.data.endTime,
+      location: { lat: parsed.data.lat, lng: parsed.data.lng },
       priceType: parsed.data.priceType,
       priceInr: parsed.data.priceInr,
+      registrationUrl: parsed.data.registrationUrl || '',
       coverImageUrl: parsed.data.coverImageUrl,
-      registrationUrl: parsed.data.registrationUrl || null,
-      publicationStatus: 'pending_review',
-      verificationStatus: 'unverified',
+      publicationStatus: 'published',
+      verificationStatus: 'community_verified',
+      isFeatured: false,
       organizerName: parsed.data.organizerName,
-      createdAt: new Date().toISOString(),
+      organizerContact: parsed.data.organizerContact,
+      category: DEFAULT_CATEGORIES.find((c) => c.id === parsed.data.categoryId) || DEFAULT_CATEGORIES[0],
+      venue: {
+        id: crypto.randomUUID(),
+        cityId: 'a1b2c3d4-0000-0000-0000-000000000001',
+        neighborhood: 'Hyderabad',
+        name: parsed.data.venueName,
+        slug: slugify(parsed.data.venueName),
+        address: parsed.data.address,
+        location: { lat: parsed.data.lat, lng: parsed.data.lng },
+        googleMapsUrl: `https://maps.google.com/?q=${encodeURIComponent(parsed.data.venueName)}`,
+      },
     };
+
+    SEED_EVENTS.unshift(createdEvent);
 
     return c.json({
       success: true,
       data: {
-        message: 'Event submitted successfully! Our curation team will verify it within 4 hours.',
+        message: 'Event submitted successfully! It is now live on the map.',
         event: createdEvent,
       },
     }, 201);

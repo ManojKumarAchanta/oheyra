@@ -5,16 +5,32 @@ import Link from 'next/link';
 import { submitEvent } from '@/lib/api';
 import { PlusCircle, CheckCircle2, ArrowLeft, Loader2, Sparkles } from 'lucide-react';
 
+// Default to today evening 18:00 to 21:00 for convenient testing
+const getDefaultTimes = () => {
+  const start = new Date(Date.now() + 4 * 3600000);
+  start.setMinutes(0, 0, 0);
+  const end = new Date(start.getTime() + 3 * 3600000);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const formatLocal = (d: Date) =>
+    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return {
+    startTime: formatLocal(start),
+    endTime: formatLocal(end),
+  };
+};
+
 export default function SubmitEventPage() {
+  const initialTimes = getDefaultTimes();
   const [formData, setFormData] = useState({
+    citySlug: 'hyderabad',
     title: '',
     categoryId: 'c1000000-0000-0000-0000-000000000001',
     venueName: '',
     address: '',
     lat: 17.4284,
     lng: 78.397,
-    startTime: '',
-    endTime: '',
+    startTime: initialTimes.startTime,
+    endTime: initialTimes.endTime,
     priceType: 'free' as const,
     priceInr: 0,
     description: '',
@@ -34,21 +50,50 @@ export default function SubmitEventPage() {
     setLoading(true);
     setErrorMsg('');
 
+    if (!formData.startTime || !formData.endTime) {
+      setErrorMsg('Please select both a start and end time for the event.');
+      setLoading(false);
+      return;
+    }
+
+    const startDate = new Date(formData.startTime);
+    const endDate = new Date(formData.endTime);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      setErrorMsg('Please select a valid date and time.');
+      setLoading(false);
+      return;
+    }
+
+    if (endDate <= startDate) {
+      setErrorMsg('Event end time must be after start time.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const payload = {
         ...formData,
-        startTime: new Date(formData.startTime).toISOString(),
-        endTime: new Date(formData.endTime).toISOString(),
+        startTime: startDate.toISOString(),
+        endTime: endDate.toISOString(),
       };
 
       const res = await submitEvent(payload);
       if (res.success) {
         setSubmitted(true);
       } else {
-        setErrorMsg(res.error?.message || 'Failed to submit event.');
+        const fieldErrors = (res.error as any)?.details?.fieldErrors;
+        let msg = res.error?.message || 'Failed to submit event.';
+        if (fieldErrors && typeof fieldErrors === 'object') {
+          const detailMsgs = Object.entries(fieldErrors)
+            .map(([field, errs]) => `${field}: ${(errs as string[]).join(', ')}`)
+            .join(' • ');
+          if (detailMsgs) msg += ` (${detailMsgs})`;
+        }
+        setErrorMsg(msg);
       }
     } catch {
-      setErrorMsg('Network error. Please try again.');
+      setErrorMsg('Network error communicating with the API. Please try again.');
     } finally {
       setLoading(false);
     }
