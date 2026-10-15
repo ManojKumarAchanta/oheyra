@@ -37,10 +37,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="min-h-screen bg-background text-neutral-100 flex flex-col">
+    <html lang="en" className="dark h-full">
+      <body className="min-h-full h-full bg-background text-neutral-100 flex flex-col">
         <Navbar />
-        <main className="flex-1 flex flex-col">{children}</main>
+        <main className="flex-1 flex flex-col min-h-0">{children}</main>
       </body>
     </html>
   );

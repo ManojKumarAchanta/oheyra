@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Event } from '@oheyra/contracts';
 import { Locate, RotateCcw } from 'lucide-react';
 
@@ -17,6 +18,27 @@ interface DiscoveryMapProps {
 const MAP_STYLE =
   process.env.NEXT_PUBLIC_MAP_STYLE_URL ||
   'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
+
+const FALLBACK_RASTER_STYLE: maplibregl.StyleSpecification = {
+  version: 8,
+  sources: {
+    'osm-tiles': {
+      type: 'raster',
+      tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+      tileSize: 256,
+      attribution: '© OpenStreetMap Contributors',
+    },
+  },
+  layers: [
+    {
+      id: 'osm-tiles-layer',
+      type: 'raster',
+      source: 'osm-tiles',
+      minzoom: 0,
+      maxzoom: 19,
+    },
+  ],
+};
 
 export function DiscoveryMap({
   events,
@@ -48,6 +70,27 @@ export function DiscoveryMap({
         }),
         'bottom-right'
       );
+
+      // Force resize once loaded so tiles render immediately
+      map.on('load', () => {
+        map.resize();
+      });
+
+      // Fallback to raster OSM if vector style fails to load
+      map.on('error', (e) => {
+        console.warn('MapLibre style notice, checking tiles:', e);
+        if (e?.error?.message?.includes('style') || e?.error?.message?.includes('Failed to fetch')) {
+          try {
+            map.setStyle(FALLBACK_RASTER_STYLE);
+          } catch {
+            // style switch fallback
+          }
+        }
+      });
+
+      const handleResize = () => map.resize();
+      window.addEventListener('resize', handleResize);
+      setTimeout(() => map.resize(), 100);
 
       mapRef.current = map;
     } catch (err) {
@@ -147,8 +190,8 @@ export function DiscoveryMap({
   };
 
   return (
-    <div className="relative h-full w-full bg-neutral-950">
-      <div ref={mapContainer} className="h-full w-full" />
+    <div className="relative h-full w-full min-h-[350px] bg-neutral-950 overflow-hidden">
+      <div ref={mapContainer} className="absolute inset-0 h-full w-full" />
 
       {/* Floating Controls */}
       <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">

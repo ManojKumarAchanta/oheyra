@@ -57,15 +57,15 @@ export default function HomePage() {
   };
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden relative">
+    <div className="flex flex-1 flex-col overflow-hidden relative h-[calc(100dvh-4rem)]">
       {/* Top Dynamic Banner if available */}
       {banners.length > 0 && <DynamicBanner banner={banners[0]} />}
 
       {/* Main Dual View Area (Map + Feed) */}
-      <div className="relative flex flex-1 overflow-hidden">
+      <div className="relative flex flex-1 h-full min-h-0 overflow-hidden">
         {/* Map View */}
         <div
-          className={`h-full w-full md:w-7/12 lg:w-2/3 ${
+          className={`h-full w-full md:w-7/12 lg:w-2/3 min-h-[350px] relative ${
             mobileView === 'list' ? 'hidden md:block' : 'block'
           }`}
         >
