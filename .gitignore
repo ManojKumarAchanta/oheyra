@@ -38,3 +38,4 @@ apps/api/.env.local
 # Coverage & test artifacts
 coverage/
 .wrangler/
+*.tsbuildinfo

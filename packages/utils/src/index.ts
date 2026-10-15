@@ -1,6 +1,6 @@
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
 import { isSameDay, addDays, getDay } from 'date-fns';
-import type { Coordinates } from '@pulse/contracts';
+import type { Coordinates } from '@oheyra/contracts';
 
 export const HYDERABAD_TIMEZONE = 'Asia/Kolkata';
 

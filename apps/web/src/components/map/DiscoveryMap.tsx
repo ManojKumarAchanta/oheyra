@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import maplibregl from 'maplibre-gl';
-import type { Event } from '@pulse/contracts';
+import type { Event } from '@oheyra/contracts';
 import { Locate, RotateCcw } from 'lucide-react';
 
 interface DiscoveryMapProps {
@@ -72,7 +72,7 @@ export function DiscoveryMap({
     events.forEach((event) => {
       const isSelected = event.id === selectedEventId;
       const el = document.createElement('div');
-      el.className = 'pulse-map-pin cursor-pointer transition-transform duration-200';
+      el.className = 'oheyra-map-pin cursor-pointer transition-transform duration-200';
       el.style.width = isSelected ? '36px' : '28px';
       el.style.height = isSelected ? '36px' : '28px';
       el.style.borderRadius = '50%';

@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, MapPin, Navigation, Bookmark, CheckCircle2, ShieldCheck } from 'lucide-react';
-import type { Event } from '@pulse/contracts';
-import { formatToIST } from '@pulse/utils';
+import type { Event } from '@oheyra/contracts';
+import { formatToIST } from '@oheyra/utils';
 
 interface EventCardProps {
   event: Event;
@@ -18,7 +18,7 @@ export function EventCard({ event, isHighlighted = false, onSelect }: EventCardP
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('pulse_favorites');
+      const stored = localStorage.getItem('oheyra_favorites') || localStorage.getItem('pulse_favorites');
       if (stored) {
         const ids = JSON.parse(stored);
         setIsSaved(Array.isArray(ids) && ids.includes(event.id));
@@ -32,7 +32,7 @@ export function EventCard({ event, isHighlighted = false, onSelect }: EventCardP
     e.preventDefault();
     e.stopPropagation();
     try {
-      const stored = localStorage.getItem('pulse_favorites');
+      const stored = localStorage.getItem('oheyra_favorites') || localStorage.getItem('pulse_favorites');
       let ids: string[] = stored ? JSON.parse(stored) : [];
       if (ids.includes(event.id)) {
         ids = ids.filter((id) => id !== event.id);
@@ -41,8 +41,8 @@ export function EventCard({ event, isHighlighted = false, onSelect }: EventCardP
         ids.push(event.id);
         setIsSaved(true);
       }
-      localStorage.setItem('pulse_favorites', JSON.stringify(ids));
-      window.dispatchEvent(new Event('pulse:favorites-changed'));
+      localStorage.setItem('oheyra_favorites', JSON.stringify(ids));
+      window.dispatchEvent(new Event('oheyra:favorites-changed'));
     } catch {
       // Ignored in restricted environments
     }

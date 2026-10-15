@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next';
+import { brand } from '@oheyra/config';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pulse.city';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || brand.siteUrl;
 
   const staticRoutes = [
     '',

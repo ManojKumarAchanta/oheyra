@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { X, ArrowRight, Zap } from 'lucide-react';
-import type { Banner as BannerType } from '@pulse/contracts';
+import type { Banner as BannerType } from '@oheyra/contracts';
 
 interface BannerProps {
   banner: BannerType;

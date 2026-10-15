@@ -1,4 +1,4 @@
--- PULSE Hyderabad Seed Data
+-- Oheyra Hyderabad Seed Data
 -- Seed: supabase/seed.sql
 
 -- 1. Insert Hyderabad City

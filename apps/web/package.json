@@ -1,5 +1,5 @@
 {
-  "name": "@pulse/web",
+  "name": "@oheyra/web",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -14,9 +14,10 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@oheyra/config": "workspace:*",
+    "@oheyra/contracts": "workspace:*",
+    "@oheyra/utils": "workspace:*",
     "@opennextjs/cloudflare": "^1.20.12",
-    "@pulse/contracts": "workspace:*",
-    "@pulse/utils": "workspace:*",
     "@supabase/supabase-js": "^2.49.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",
@@ -28,7 +29,6 @@
     "tailwind-merge": "^3.0.1"
   },
   "devDependencies": {
-    "@pulse/config": "workspace:*",
     "@types/node": "^20.17.19",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^19.0.8",
@@ -38,6 +38,6 @@
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3",
     "vitest": "^3.0.7",
-    "wrangler": "^3.109.2"
+    "wrangler": "^3.114.17"
   }
 }

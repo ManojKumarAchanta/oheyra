@@ -279,7 +279,7 @@ export default function SubmitEventPage() {
           ) : (
             <>
               <PlusCircle className="h-4 w-4" />
-              <span>Submit Event to PULSE</span>
+              <span>Submit Event to Oheyra</span>
             </>
           )}
         </button>

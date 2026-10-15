@@ -1,27 +1,14 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { FastifyInstance } from 'fastify';
-import { buildApp } from '../src/app.js';
+import { describe, it, expect } from 'vitest';
+import { createApp } from '../src/index.js';
 
 describe('Event Endpoints', () => {
-  let app: FastifyInstance;
-
-  beforeAll(async () => {
-    app = buildApp();
-    await app.ready();
-  });
-
-  afterAll(async () => {
-    await app.close();
-  });
+  const app = createApp();
 
   it('GET /api/v1/events returns list of events with pagination envelope', async () => {
-    const res = await app.inject({
-      method: 'GET',
-      url: '/api/v1/events',
-    });
+    const res = await app.request('/api/v1/events');
+    expect(res.status).toBe(200);
 
-    expect(res.statusCode).toBe(200);
-    const body = JSON.parse(res.payload);
+    const body = await res.json();
     expect(body.success).toBe(true);
     expect(Array.isArray(body.data)).toBe(true);
     expect(body.data.length).toBeGreaterThan(0);
@@ -29,13 +16,10 @@ describe('Event Endpoints', () => {
   });
 
   it('GET /api/v1/events/:citySlug/:slug returns single event or 404', async () => {
-    const res = await app.inject({
-      method: 'GET',
-      url: '/api/v1/events/hyderabad/acoustic-sunset-indie-roots',
-    });
+    const res = await app.request('/api/v1/events/hyderabad/acoustic-sunset-indie-roots');
+    expect(res.status).toBe(200);
 
-    expect(res.statusCode).toBe(200);
-    const body = JSON.parse(res.payload);
+    const body = await res.json();
     expect(body.success).toBe(true);
     expect(body.data.slug).toBe('acoustic-sunset-indie-roots');
   });
@@ -59,26 +43,23 @@ describe('Event Endpoints', () => {
       organizerContact: 'birds@kbrwalks.org',
     };
 
-    const res = await app.inject({
+    const res = await app.request('/api/v1/events/submit', {
       method: 'POST',
-      url: '/api/v1/events/submit',
-      payload: newEvent,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newEvent),
     });
 
-    expect(res.statusCode).toBe(201);
-    const body = JSON.parse(res.payload);
+    expect(res.status).toBe(201);
+    const body = await res.json();
     expect(body.success).toBe(true);
     expect(body.data.event.publicationStatus).toBe('pending_review');
   });
 
   it('GET /api/v1/banners returns active banners', async () => {
-    const res = await app.inject({
-      method: 'GET',
-      url: '/api/v1/banners',
-    });
+    const res = await app.request('/api/v1/banners');
+    expect(res.status).toBe(200);
 
-    expect(res.statusCode).toBe(200);
-    const body = JSON.parse(res.payload);
+    const body = await res.json();
     expect(body.success).toBe(true);
     expect(Array.isArray(body.data)).toBe(true);
   });

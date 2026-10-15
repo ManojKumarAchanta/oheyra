@@ -18,8 +18,8 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const formattedCategory = category.charAt(0).toUpperCase() + category.slice(1);
 
   return {
-    title: `${formattedCategory} Events in ${formattedCity} — PULSE`,
-    description: `Discover upcoming ${category} gigs, activities, and pop-ups in ${formattedCity}.`,
+    title: `${formattedCategory} Events in ${formattedCity} — Oheyra`,
+    description: `Discover upcoming ${category} gigs, activities, and pop-ups in ${formattedCity} with Oheyra.`,
   };
 }
 

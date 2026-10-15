@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { fetchEvents } from '@/lib/api';
-import type { Event } from '@pulse/contracts';
+import type { Event } from '@oheyra/contracts';
 import { EventCard } from '@/components/events/EventCard';
 import { Bookmark, ArrowLeft } from 'lucide-react';
 
@@ -14,7 +14,7 @@ export default function SavedEventsPage() {
   useEffect(() => {
     async function loadSaved() {
       try {
-        const stored = localStorage.getItem('pulse_favorites');
+        const stored = localStorage.getItem('oheyra_favorites') || localStorage.getItem('pulse_favorites');
         const ids: string[] = stored ? JSON.parse(stored) : [];
 
         if (ids.length > 0) {
@@ -32,8 +32,12 @@ export default function SavedEventsPage() {
     }
 
     loadSaved();
+    window.addEventListener('oheyra:favorites-changed', loadSaved);
     window.addEventListener('pulse:favorites-changed', loadSaved);
-    return () => window.removeEventListener('pulse:favorites-changed', loadSaved);
+    return () => {
+      window.removeEventListener('oheyra:favorites-changed', loadSaved);
+      window.removeEventListener('pulse:favorites-changed', loadSaved);
+    };
   }, []);
 
   return (

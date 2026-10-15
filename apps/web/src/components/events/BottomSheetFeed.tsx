@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Search, Flame, Clock, CalendarDays, SlidersHorizontal, Sparkles } from 'lucide-react';
-import type { Event, Category } from '@pulse/contracts';
+import type { Event, Category } from '@oheyra/contracts';
 import { EventCard } from './EventCard';
 
 interface BottomSheetFeedProps {

@@ -1,9 +1,27 @@
 {
-  "name": "@pulse/config",
+  "name": "@oheyra/config",
   "version": "1.0.0",
   "private": true,
-  "main": "index.js",
-  "files": [
-    "tsconfig.base.json"
-  ]
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./brand": {
+      "types": "./dist/brand.d.ts",
+      "import": "./dist/brand.js",
+      "default": "./dist/brand.js"
+    },
+    "./tsconfig.base.json": "./tsconfig.base.json"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
 }

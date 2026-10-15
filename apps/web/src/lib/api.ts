@@ -1,4 +1,4 @@
-import type { Event, Category, Banner, City, Venue } from '@pulse/contracts';
+import type { Event, Category, Banner, City, Venue } from '@oheyra/contracts';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 

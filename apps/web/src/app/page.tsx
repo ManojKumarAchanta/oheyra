@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { fetchEvents, fetchCategories, fetchBanners } from '@/lib/api';
-import type { Event, Category, Banner } from '@pulse/contracts';
+import type { Event, Category, Banner } from '@oheyra/contracts';
 import { DiscoveryMap } from '@/components/map/DiscoveryMap';
 import { BottomSheetFeed } from '@/components/events/BottomSheetFeed';
 import { DynamicBanner } from '@/components/ui/Banner';

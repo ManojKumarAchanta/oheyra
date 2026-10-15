@@ -1,4 +1,4 @@
--- PULSE Initial Production Schema Migration
+-- Oheyra Initial Production Schema Migration
 -- Migration: 20261016000001_initial_schema.sql
 -- Description: Core tables, PostGIS geography types, indexes, and RLS policies
 

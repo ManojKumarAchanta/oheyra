@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   validate:
-    name: Lint, Test & Build Validation
+    name: Lint, Test & Cloudflare Build Validation
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -52,8 +52,9 @@ jobs:
 
       - name: Build Shared Packages
         run: |
-          pnpm --filter @pulse/contracts build
-          pnpm --filter @pulse/utils build
+          pnpm --filter @oheyra/config build
+          pnpm --filter @oheyra/contracts build
+          pnpm --filter @oheyra/utils build
 
       - name: TypeScript Typecheck
         run: pnpm typecheck
@@ -61,12 +62,12 @@ jobs:
       - name: Run Unit & Integration Tests
         run: pnpm test
 
-      - name: Validate Fastify API Build
-        run: pnpm build:api
+      - name: Validate Cloudflare Workers API Build
+        run: pnpm --filter @oheyra/api build
 
       - name: Validate Next.js Frontend Build
         env:
-          NEXT_PUBLIC_SITE_URL: https://pulse.city
-          NEXT_PUBLIC_API_URL: https://pulse-api.koyeb.app
+          NEXT_PUBLIC_SITE_URL: https://oheyra.city
+          NEXT_PUBLIC_API_URL: https://oheyra-api.workers.dev
           NEXT_PUBLIC_MAP_STYLE_URL: https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json
-        run: pnpm build:web
+        run: pnpm --filter @oheyra/web build

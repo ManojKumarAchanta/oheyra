@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { MapPin, QrCode, PlusCircle, Bookmark, Sparkles } from 'lucide-react';
+import { MapPin, QrCode, PlusCircle, Bookmark, Compass } from 'lucide-react';
+import { brand } from '@oheyra/config';
 
 export function Navbar() {
   const [savedCount, setSavedCount] = useState(0);
@@ -10,7 +11,7 @@ export function Navbar() {
   useEffect(() => {
     const updateCount = () => {
       try {
-        const stored = localStorage.getItem('pulse_favorites');
+        const stored = localStorage.getItem('oheyra_favorites') || localStorage.getItem('pulse_favorites');
         if (stored) {
           const parsed = JSON.parse(stored);
           setSavedCount(Array.isArray(parsed) ? parsed.length : 0);
@@ -22,9 +23,11 @@ export function Navbar() {
 
     updateCount();
     window.addEventListener('storage', updateCount);
+    window.addEventListener('oheyra:favorites-changed', updateCount);
     window.addEventListener('pulse:favorites-changed', updateCount);
     return () => {
       window.removeEventListener('storage', updateCount);
+      window.removeEventListener('oheyra:favorites-changed', updateCount);
       window.removeEventListener('pulse:favorites-changed', updateCount);
     };
   }, []);
@@ -36,17 +39,22 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2 group">
             <div className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-electric-violet/20 text-electric-violet border border-electric-violet/40 group-hover:scale-105 transition-transform">
-              <Sparkles className="h-4 w-4" />
+              <Compass className="h-4 w-4" />
               <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-electric-coral animate-ping" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-white font-display">
-              PULSE
-            </span>
+            <div className="flex flex-col">
+              <span className="text-xl font-bold tracking-tight text-white font-display leading-none">
+                {brand.name}
+              </span>
+              <span className="hidden sm:inline text-[9px] text-neutral-400 font-medium tracking-wide">
+                {brand.tagline}
+              </span>
+            </div>
           </Link>
 
           <div className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-xs font-medium text-neutral-300 border border-border">
             <MapPin className="h-3 w-3 text-electric-coral" />
-            <span>Hyderabad</span>
+            <span>{brand.launchCity}</span>
           </div>
         </div>
 

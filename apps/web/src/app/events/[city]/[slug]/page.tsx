@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchEventBySlug } from '@/lib/api';
-import { formatToIST } from '@pulse/utils';
+import { formatToIST } from '@oheyra/utils';
 import { Calendar, MapPin, Navigation, Share2, ShieldCheck, ArrowLeft, ExternalLink, Ticket } from 'lucide-react';
 import type { Metadata } from 'next';
 
@@ -17,15 +17,16 @@ interface EventPageProps {
 export async function generateMetadata({ params }: EventPageProps): Promise<Metadata> {
   const { city, slug } = await params;
   const event = await fetchEventBySlug(city, slug);
-  if (!event) return { title: 'Event Not Found — PULSE' };
+  if (!event) return { title: 'Event Not Found — Oheyra' };
 
   return {
-    title: `${event.title} — Hyderabad Events | PULSE`,
+    title: `${event.title} — Hyderabad Events | Oheyra`,
     description: event.description.slice(0, 160),
     openGraph: {
       title: event.title,
       description: event.description.slice(0, 160),
       images: [{ url: event.coverImageUrl }],
+      siteName: 'Oheyra',
       type: 'article',
     },
   };

@@ -1,16 +1,16 @@
-# PULSE — Real-Time Local Discovery Platform
+# Oheyra — Local Discovery Platform
 
-> **Your City. Your Vibe. Right Now.**  
-> A hyper-local activity discovery engine launching in Hyderabad, India. Built for speed, mobile-first responsiveness, and zero planned infrastructure spend.
+> **Your city has plans.**  
+> Oheyra helps people discover things to do around them, including local events, cafés, college activities, pop-ups, sports screenings, workshops, and other experiences. Launching in Hyderabad, India.
 
 ---
 
 ## ⚡ Tech Stack
 
-* **Frontend:** Next.js 15 (App Router, React 19, TypeScript, Tailwind CSS, Lucide Icons, MapLibre GL JS).
-* **Backend:** Fastify 5 modular monolith (TypeScript, Zod schemas, structured logging, OpenAPI documentation).
+* **Frontend:** Next.js 15 (App Router, React 19, TypeScript, Tailwind CSS, Lucide Icons, MapLibre GL JS) on **Cloudflare Workers** via `@opennextjs/cloudflare`.
+* **Backend:** Hono REST API on **Cloudflare Workers** (V8 edge isolates, sub-ms cold starts, zero Docker).
 * **Database & Auth:** Supabase PostgreSQL with PostGIS geography extensions and Row Level Security.
-* **Hosting:** Cloudflare Workers (Next.js via `@opennextjs/cloudflare`) & Koyeb (Fastify Docker container).
+* **Hosting:** 100% Cloudflare Workers (Frontend & API). Zero server maintenance, zero VPS costs.
 * **Toolchain:** `pnpm` workspaces, Vitest, GitHub Actions CI/CD.
 
 ---
@@ -18,24 +18,23 @@
 ## 📁 Repository Structure
 
 ```
-pulse/
+oheyra/
 ├── apps/
-│   ├── web/                     # Next.js 15 App Router frontend
-│   └── api/                     # Node.js Fastify API (Modular Monolith)
+│   ├── web/                     # Next.js 15 App Router frontend (Cloudflare Workers)
+│   └── api/                     # Hono API on Cloudflare Workers
 ├── packages/
+│   ├── config/                  # Canonical brand configuration (Oheyra)
 │   ├── contracts/               # Shared Zod schemas & TypeScript types
-│   ├── utils/                   # Spatial math (Haversine) & date-fns formatters
-│   └── config/                  # Shared tsconfig base configs
+│   └── utils/                   # Spatial math (Haversine) & date-fns formatters
 ├── supabase/
 │   ├── migrations/              # Versioned PostGIS & Postgres SQL migrations
 │   └── seed.sql                 # Curated Hyderabad seed data (Jubilee, Banjara, etc.)
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml               # Comprehensive lint, typecheck, test, and build CI
-│       ├── deploy-frontend.yml  # Independent CD for Cloudflare Workers
-│       └── deploy-backend.yml   # Independent CD for Koyeb API
+│       ├── deploy-frontend.yml  # Independent CD for Frontend to Cloudflare Workers
+│       └── deploy-backend.yml   # Independent CD for API to Cloudflare Workers
 ├── docs/                        # Complete architecture, deployment, and runbooks
-├── koyeb.yaml                   # Koyeb free container configuration
 └── pnpm-workspace.yaml
 ```
 
@@ -50,22 +49,20 @@ pnpm install
 
 ### 2. Build Shared Packages
 ```bash
-pnpm --filter @pulse/contracts build
-pnpm --filter @pulse/utils build
+pnpm --filter @oheyra/config build
+pnpm --filter @oheyra/contracts build
+pnpm --filter @oheyra/utils build
 ```
 
 ### 3. Run Development Servers
 ```bash
-# Starts both Next.js frontend (http://localhost:3000) and Fastify API (http://localhost:3001)
+# Starts both Next.js frontend (http://localhost:3000) and API (http://localhost:3001)
 pnpm dev
 
 # Or run them individually:
 pnpm dev:web
 pnpm dev:api
 ```
-
-### 4. Interactive API Documentation
-Open `http://localhost:3001/docs` to view and test all Fastify REST API endpoints via Swagger UI.
 
 ---
 
@@ -75,7 +72,7 @@ Open `http://localhost:3001/docs` to view and test all Fastify REST API endpoint
 # Run full unit and integration test suite
 pnpm test
 
-# Run strict TypeScript typechecks across all 6 workspace packages
+# Run strict TypeScript typechecks across all 5 workspace packages
 pnpm typecheck
 
 # Build both production artifacts
@@ -87,8 +84,8 @@ pnpm build
 ## 🚢 Deployment (Plug in Env Vars & Deploy Separately)
 
 See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for step-by-step instructions:
-1. **Frontend CD:** Trigger `.github/workflows/deploy-frontend.yml` to deploy to Cloudflare Workers.
-2. **Backend CD:** Link your repository to Koyeb or trigger `.github/workflows/deploy-backend.yml` to deploy to Koyeb.
+1. **Frontend CD:** Trigger `.github/workflows/deploy-frontend.yml` to deploy to Cloudflare Workers (`oheyra-web`).
+2. **Backend CD:** Trigger `.github/workflows/deploy-backend.yml` to deploy to Cloudflare Workers (`oheyra-api`).
 3. **Database:** Run `supabase/migrations/20261016000001_initial_schema.sql` and `supabase/seed.sql` in your Supabase SQL Editor.
 
 ---

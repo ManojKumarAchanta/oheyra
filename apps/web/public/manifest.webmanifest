@@ -1,0 +1,16 @@
+{
+  "name": "Oheyra — Discover Things to Do",
+  "short_name": "Oheyra",
+  "description": "Your city has plans. Discover local events, cafés, pop-ups, workshops, sports screenings, and things to do around Hyderabad with Oheyra.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0C",
+  "theme_color": "#0A0A0C",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

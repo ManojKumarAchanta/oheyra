@@ -1,13 +1,12 @@
-name: Deploy Backend (Koyeb)
+name: Deploy Backend (Cloudflare Workers)
 
 on:
-  workflow_dispatch: # Allows manual trigger from GitHub Actions UI
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
       - 'apps/api/**'
       - 'packages/**'
-      - 'koyeb.yaml'
       - '.github/workflows/deploy-backend.yml'
 
 concurrency:
@@ -15,8 +14,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy-koyeb:
-    name: Trigger Koyeb Deployment
+  deploy-api:
+    name: Build & Deploy API to Cloudflare Workers
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -24,18 +23,34 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Koyeb CLI
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/koyeb/koyeb-cli/master/install.sh | sh
-          echo "$HOME/.koyeb/bin" >> $GITHUB_PATH
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
 
-      - name: Deploy Service via Koyeb CLI
-        env:
-          KOYEB_TOKEN: ${{ secrets.KOYEB_API_TOKEN }}
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.5
+          run_install: false
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile || pnpm install
+
+      - name: Build Shared Packages
         run: |
-          if [ -z "$KOYEB_TOKEN" ]; then
-            echo "::warning ::KOYEB_API_TOKEN secret not configured yet. Skipping CLI trigger."
-            echo "You can link your GitHub repo directly in Koyeb UI or add the KOYEB_API_TOKEN secret to GitHub Secrets."
-            exit 0
-          fi
-          koyeb service redeploy pulse-api/pulse-api
+          pnpm --filter @oheyra/config build
+          pnpm --filter @oheyra/contracts build
+          pnpm --filter @oheyra/utils build
+
+      - name: Deploy API to Cloudflare Workers
+        working-directory: apps/api
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          WEB_ORIGIN: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://oheyra.city' }}
+        run: |
+          npx wrangler deploy

@@ -5,7 +5,7 @@ import QRCode from 'qrcode';
 import { Download, Sparkles, QrCode as QrIcon, Copy, Check } from 'lucide-react';
 
 export default function QRStudioPage() {
-  const [targetUrl, setTargetUrl] = useState('https://pulse.city/hyderabad');
+  const [targetUrl, setTargetUrl] = useState('https://oheyra.city/hyderabad');
   const [dotColor, setDotColor] = useState('#8B5CF6');
   const [bgColor, setBgColor] = useState('#0A0A0C');
   const [copied, setCopied] = useState(false);
@@ -34,7 +34,7 @@ export default function QRStudioPage() {
   const downloadPNG = () => {
     if (!canvasRef.current) return;
     const link = document.createElement('a');
-    link.download = `pulse-qr-${Date.now()}.png`;
+    link.download = `oheyra-qr-${Date.now()}.png`;
     link.href = canvasRef.current.toDataURL('image/png');
     link.click();
   };
@@ -73,7 +73,7 @@ export default function QRStudioPage() {
                 value={targetUrl}
                 onChange={(e) => setTargetUrl(e.target.value)}
                 className="w-full rounded-xl bg-surface-elevated px-4 py-2 text-sm text-white border border-border focus:border-electric-violet focus:outline-none"
-                placeholder="https://pulse.city/events/..."
+                placeholder="https://oheyra.city/events/..."
               />
               <button
                 onClick={copyUrl}

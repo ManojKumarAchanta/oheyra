@@ -1,22 +1,33 @@
 import type { Metadata } from 'next';
 import '../styles/globals.css';
 import { Navbar } from '@/components/ui/Navbar';
+import { brand } from '@oheyra/config';
 
 export const metadata: Metadata = {
-  title: 'PULSE — Real-Time Local Discovery in Hyderabad',
-  description: 'Your City. Your Vibe. Right Now. Discover live music, night pop-ups, artisan workshops, and food trails across Hyderabad.',
-  keywords: ['Hyderabad events', 'Live music Hyderabad', 'Jubilee Hills nightlife', 'Banjara Hills workshops', 'Things to do tonight Hyderabad'],
+  title: `${brand.name} — Discover Things to Do in Your City`,
+  description: `${brand.tagline} Discover local events, cafés, pop-ups, workshops, sports screenings, and things to do around ${brand.launchCity} with ${brand.name}.`,
+  keywords: [
+    'Hyderabad events',
+    'Things to do in Hyderabad',
+    'Oheyra',
+    'Live music Hyderabad',
+    'Jubilee Hills nightlife',
+    'Banjara Hills workshops',
+    'Weekend pop-ups Hyderabad',
+  ],
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || brand.siteUrl),
   openGraph: {
-    title: 'PULSE — Real-Time Local Discovery in Hyderabad',
-    description: 'Find out what is happening around you right now, tonight, or this weekend in Hyderabad.',
-    siteName: 'PULSE',
-    locale: 'en_IN',
+    title: `${brand.name} — Discover Things to Do in Your City`,
+    description: `${brand.tagline} Discover local events, cafés, pop-ups, workshops, and nightlife across ${brand.launchCity}.`,
+    siteName: brand.name,
+    locale: brand.defaultLocale,
     type: 'website',
+    url: process.env.NEXT_PUBLIC_SITE_URL || brand.siteUrl,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PULSE — Real-Time Local Discovery in Hyderabad',
-    description: 'Your City. Your Vibe. Right Now.',
+    title: `${brand.name} — Discover Things to Do in Your City`,
+    description: `${brand.tagline} Discover local events, cafés, and nightlife in ${brand.launchCity}.`,
   },
 };
 
