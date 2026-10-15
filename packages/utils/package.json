@@ -1,0 +1,29 @@
+{
+  "name": "@pulse/utils",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "tsc -b -w",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@pulse/contracts": "workspace:*",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0"
+  },
+  "devDependencies": {
+    "@pulse/config": "workspace:*",
+    "typescript": "^5.7.3"
+  }
+}

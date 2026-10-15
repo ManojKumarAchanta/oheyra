@@ -1,0 +1,36 @@
+# Koyeb App & Service Configuration
+# Documentation: https://www.koyeb.com/docs/reference/koyeb-yaml
+name: pulse-api-app
+services:
+  - name: pulse-api
+    type: web
+    git:
+      repository: github.com/${KOYEB_REPO:-your-org/pulse}
+      branch: main
+    docker:
+      dockerfile: apps/api/Dockerfile
+    instance_type: nano # 512MB RAM, 0.1 vCPU (Free Tier eligible)
+    regions:
+      - fra # Frankfurt (default free region)
+    routes:
+      - path: /
+        port: 8000
+    health_checks:
+      - http:
+          path: /health
+          port: 8000
+        interval: 30
+        timeout: 5
+        healthy_threshold: 1
+        unhealthy_threshold: 3
+    env:
+      - key: NODE_ENV
+        value: "production"
+      - key: PORT
+        value: "8000"
+      - key: HOST
+        value: "0.0.0.0"
+      - key: LOG_LEVEL
+        value: "info"
+      - key: WEB_ORIGIN
+        value: "https://pulse.city"
