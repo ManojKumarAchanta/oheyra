@@ -48,9 +48,12 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          WEB_ORIGIN: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://oheyra.city' }}
         run: |
-          npx wrangler deploy
+          npx wrangler deploy \
+            --var NODE_ENV:production \
+            --var WEB_ORIGIN:"${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://oheyra.city' }}" \
+            --var SUPABASE_URL:"${{ secrets.SUPABASE_URL }}" \
+            --var SUPABASE_ANON_KEY:"${{ secrets.SUPABASE_ANON_KEY }}"
+          if [ -n "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ]; then
+            echo "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" | npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY || true
+          fi
